@@ -17,6 +17,12 @@ Token::Token(TokenType p_type, size_t p_lineNum, size_t p_colNum, const std::str
 {
 }
 
+bool
+Token::IsError()
+{
+    return m_type == TokenType::ERROR;
+}
+
 std::ostream& operator<<(std::ostream& p_stream, const Token& p_token)
 {
     std::string t;

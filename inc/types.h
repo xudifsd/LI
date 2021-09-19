@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace LI
 {
@@ -43,8 +44,10 @@ namespace LI
 
     struct List : Expression
     {
-        List(const std::vector<Expression> p_val);
+        List(const std::vector<std::shared_ptr<Expression>> p_val);
 
-        std::vector<Expression> m_value;
+        std::vector<std::shared_ptr<Expression>> m_value;
     };
 }
+
+std::ostream& operator<<(std::ostream& p_stream, const LI::Expression& p_exp);

@@ -8,7 +8,7 @@ Environ::Environ(std::shared_ptr<Environ> p_parent)
 }
 
 std::shared_ptr<Expression>
-Environ::Lookup(const std::string p_symbol)
+Environ::Lookup(const std::string& p_symbol)
 {
     Environ* p = this;
     while (p != nullptr)
@@ -24,7 +24,7 @@ Environ::Lookup(const std::string p_symbol)
 }
 
 bool
-Environ::Add(const std::string p_symbol, std::shared_ptr<Expression> value)
+Environ::Add(const std::string& p_symbol, std::shared_ptr<Expression> value)
 {
     auto previous = m_current.find(p_symbol);
     m_current[p_symbol] = value;

@@ -18,3 +18,5 @@
 
 # For this project only
 t_lexer
+t_parser
+libli

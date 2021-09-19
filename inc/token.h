@@ -26,8 +26,9 @@ namespace LI
 
         Token(TokenType p_type, size_t p_lineNum, size_t p_colNum);
         Token(TokenType p_type, size_t p_lineNum, size_t p_colNum, const std::string& p_lexeme);
+
+        bool IsError();
     };
 }
 
 std::ostream& operator<<(std::ostream& p_stream, const LI::Token& p_token);
-
