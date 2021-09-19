@@ -5,10 +5,10 @@ CXX=clang++
 CXXFLAGS = -I $(IDIR) -Wall -fPIC
 LIBS = -lm
 
-_DEPS = env.h types.h token.h lexer.h parser.h
+_DEPS = env.h exps.h token.h lexer.h parser.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = env.o token.o types.o lexer.o parser.o
+_OBJ = env.o exps.o token.o lexer.o parser.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)
