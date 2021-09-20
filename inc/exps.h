@@ -12,6 +12,7 @@ namespace LI
         Float,
         Symbol,
         List,
+        Callable,
     };
 
     struct Expression
@@ -19,6 +20,8 @@ namespace LI
         Expression(ExpType p_type);
 
         ExpType m_type;
+
+        virtual ~Expression();
     };
 
     struct Integer : Expression
@@ -37,7 +40,7 @@ namespace LI
 
     struct Symbol : Expression
     {
-        Symbol(const std::string p_val);
+        Symbol(const std::string& p_val);
 
         std::string m_value;
     };

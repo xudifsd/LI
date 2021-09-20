@@ -24,7 +24,7 @@ Environ::Lookup(const std::string& p_symbol)
 }
 
 bool
-Environ::Add(const std::string& p_symbol, std::shared_ptr<Expression> value)
+Environ::Set(const std::string& p_symbol, std::shared_ptr<Expression> value)
 {
     auto previous = m_current.find(p_symbol);
     m_current[p_symbol] = value;
