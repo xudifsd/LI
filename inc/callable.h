@@ -29,6 +29,8 @@ namespace LI
     {
         RtnType m_type;
         std::string m_msg;
+
+        bool IsError();
     };
 
     class Callable : public Expression

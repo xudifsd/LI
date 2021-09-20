@@ -4,6 +4,12 @@
 
 using namespace LI;
 
+bool
+RtnValue::IsError()
+{
+    return m_type != RtnType::SUCC;
+}
+
 Callable::Callable(CallableType p_type)
     : Expression(ExpType::Callable),
       m_type(p_type)

@@ -24,7 +24,7 @@ std::vector<std::shared_ptr<Expression>> eval(const std::string& input)
     {
         std::shared_ptr<Expression> r;
         RtnValue v = Eval(*e.m_exp, r, *base);
-        //ASSERT_EQ(v.m_type, RtnType::SUCC);
+
         result.push_back(r);
         e = parser.NextExp();
     }

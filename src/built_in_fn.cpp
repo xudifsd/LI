@@ -15,7 +15,7 @@ RtnValue
 Add::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<Expression>& result, Environ& env) const
 {
     RtnValue rtn = CheckArgs(args, -1, 1);
-    if (rtn.m_type != RtnType::SUCC)
+    if (rtn.IsError())
     {
         return rtn;
     }
