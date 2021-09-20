@@ -1,23 +1,16 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <cassert>
+#include <gtest/gtest.h>
 
 #include "lexer.h"
 #include "token.h"
+#include "test_utils.h"
 
 using namespace LI;
+using namespace LI_test;
 
-void assert_token(const Token& t, TokenType type, size_t lineNum, size_t colNum, const std::string& lexeme)
-{
-    std::cout << t << std::endl;
-    assert(t.m_type == type);
-    assert(t.m_lineNum == lineNum);
-    assert(t.m_colNum == colNum);
-    assert(t.m_lexeme == lexeme);
-}
-
-void correct()
+TEST(testLexer, correct)
 {
     std::string input = "Hello (+ (/ 2.123 .3 ) 122)\n abd + .2";
     std::unique_ptr<std::istream> p = std::make_unique<std::istringstream>(std::istringstream(input));
@@ -32,7 +25,7 @@ void correct()
     }
     tokens.push_back(t);
 
-    assert(tokens.size() == 14);
+    ASSERT_EQ(tokens.size(), 14);
     assert_token(tokens[0], TokenType::SYMBOL, 1, 1, "Hello");
     assert_token(tokens[1], TokenType::LPAREN, 1, 7, "");
     assert_token(tokens[2], TokenType::SYMBOL, 1, 8, "+");
@@ -50,7 +43,7 @@ void correct()
     assert_token(tokens[13], TokenType::TEOF, 2, 10, "");
 }
 
-void incorrect()
+TEST(testLexer, failOnIncorrectFloat)
 {
     std::string input = "Hello .1.21";
     std::unique_ptr<std::istream> p = std::make_unique<std::istringstream>(std::istringstream(input));
@@ -65,14 +58,7 @@ void incorrect()
     }
     tokens.push_back(t);
 
-    assert(tokens.size() == 2);
+    ASSERT_EQ(tokens.size(), 2);
     assert_token(tokens[0], TokenType::SYMBOL, 1, 1, "Hello");
     assert_token(tokens[1], TokenType::ERROR, 1, 7, ".1.");
-}
-
-int main()
-{
-    correct();
-    incorrect();
-    return 0;
 }
