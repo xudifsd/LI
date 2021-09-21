@@ -13,6 +13,6 @@ namespace LI
         public:
             Add();
 
-            virtual RtnValue Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<Expression>& result, Environ& env) const override;
+            virtual RtnValue Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<Expression>& result, std::shared_ptr<Environ> env) const override;
     };
 }

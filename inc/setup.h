@@ -5,6 +5,7 @@
 
 #include "env.h"
 #include "built_in_fn.h"
+#include "built_in_macro.h"
 
 namespace LI
 {

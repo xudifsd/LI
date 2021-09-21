@@ -23,6 +23,7 @@ namespace LI
         ERR_TYPE,
         ERR_MATH,
         ERR_UNBOUND,
+        ERR_INTERNAL,
     };
 
     struct RtnValue
@@ -42,6 +43,8 @@ namespace LI
 
             static RtnValue CheckArgs(const std::vector<std::shared_ptr<Expression>>& args, int argc, int atLeast);
 
+            virtual RtnValue Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<Expression>& result, std::shared_ptr<Environ> env) const = 0;
+
         private:
             CallableType m_type;
     };
@@ -50,11 +53,30 @@ namespace LI
         public:
             BuiltInFn();
 
-            virtual RtnValue Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<Expression>& result, Environ& env) const = 0;
-            virtual ~BuiltInFn();
+            virtual RtnValue Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<Expression>& result, std::shared_ptr<Environ> env) const = 0;
     };
 
-    RtnValue Eval(const Expression& exp, std::shared_ptr<Expression>& result, Environ& env);
+    class BuiltInMacro : public Callable {
+        public:
+            BuiltInMacro();
 
-    RtnValue Eval_seq(const std::vector<std::shared_ptr<Expression>>& exps, std::vector<std::shared_ptr<Expression>>& result, Environ& env, bool ignoreFirst);
+            virtual RtnValue Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<Expression>& result, std::shared_ptr<Environ> env) const = 0;
+    };
+
+    class Fn : public Callable
+    {
+        public:
+            Fn(const std::vector<std::string>& p_parameters, const std::vector<std::shared_ptr<Expression>> p_body, std::shared_ptr<Environ> p_context);
+
+            virtual RtnValue Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<Expression>& result, std::shared_ptr<Environ> env) const override;
+
+        private:
+            std::vector<std::string> m_parameters;
+            std::vector<std::shared_ptr<Expression>> m_body;
+            std::shared_ptr<Environ> m_context;
+    };
+
+    RtnValue Eval(const Expression& exp, std::shared_ptr<Expression>& result, std::shared_ptr<Environ> env);
+
+    RtnValue Eval_seq(const std::vector<std::shared_ptr<Expression>>& exps, std::vector<std::shared_ptr<Expression>>& result, std::shared_ptr<Environ> env, bool ignoreFirst);
 }

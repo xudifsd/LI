@@ -8,9 +8,11 @@
 
 namespace LI
 {
-    class Add : BuiltInFn
+    class Lambda : public BuiltInMacro
     {
         public:
-            virtual RtnValue Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<Expression>& result, Environ& env) const;
+            Lambda();
+
+            virtual RtnValue Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<Expression>& result, std::shared_ptr<Environ> env) const override;
     };
 }

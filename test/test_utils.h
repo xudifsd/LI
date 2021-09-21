@@ -1,11 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <sstream>
-#include <iostream>
 #include <vector>
-#include <math.h>
-#include <gtest/gtest.h>
 
 #include "parser.h"
 #include "token.h"
@@ -22,4 +18,6 @@ namespace LI_test
     void assert_float_exp(const LI::Expression& p_exp, float b, float epsilon);
 
     void assert_sym_exp(const LI::Expression& p_exp, const std::string& p_val);
+
+    std::vector<std::shared_ptr<LI::Expression>> eval(const std::string& input);
 }

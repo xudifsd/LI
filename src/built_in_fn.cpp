@@ -12,7 +12,7 @@ Add::Add()
 }
 
 RtnValue
-Add::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<Expression>& result, Environ& env) const
+Add::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<Expression>& result, std::shared_ptr<Environ> env) const
 {
     RtnValue rtn = CheckArgs(args, -1, 1);
     if (rtn.IsError())

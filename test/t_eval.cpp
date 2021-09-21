@@ -1,35 +1,11 @@
-#include <iostream>
-#include <sstream>
 #include <vector>
-#include <math.h>
 #include <gtest/gtest.h>
 
-#include "parser.h"
-#include "setup.h"
-#include "built_in_fn.h"
 #include "exps.h"
 #include "test_utils.h"
 
 using namespace LI;
 using namespace LI_test;
-
-std::vector<std::shared_ptr<Expression>> eval(const std::string& input)
-{
-    std::shared_ptr<Environ> base = setup_base();
-    Parser parser("<input>", string_input(input));
-
-    std::vector<std::shared_ptr<Expression>> result;
-    ParseResult e = parser.NextExp();
-    while (!e.m_isError && e.m_token.m_type != TokenType::TEOF)
-    {
-        std::shared_ptr<Expression> r;
-        RtnValue v = Eval(*e.m_exp, r, *base);
-
-        result.push_back(r);
-        e = parser.NextExp();
-    }
-    return result;
-}
 
 TEST(testEval, correct)
 {
