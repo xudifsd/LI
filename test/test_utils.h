@@ -6,6 +6,7 @@
 #include "parser.h"
 #include "token.h"
 #include "exps.h"
+#include "env.h"
 
 namespace LI_test
 {
@@ -20,4 +21,10 @@ namespace LI_test
     void assert_sym_exp(const LI::Expression& p_exp, const std::string& p_val);
 
     std::vector<std::shared_ptr<LI::Expression>> eval(const std::string& input);
+
+    std::vector<std::shared_ptr<LI::Expression>> eval(const std::string& input, std::shared_ptr<LI::Environ> base);
+
+    void RunAndReport(const std::string& input, int times);
+
+    void RunPerf();
 }

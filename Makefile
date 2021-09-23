@@ -32,7 +32,7 @@ test: run_test
 	./run_test
 
 run_test: $(TDIR)/main.cpp $(OBJ) $(TOBJ)
-	$(CXX) -o $@ $^ $(LIBS) $(TLIBS)
+	$(CXX) -o $@ $^ $(LIBS) $(TLIBS) $(CXXFLAGS)
 
 .PHONY: clean wc
 

@@ -19,7 +19,6 @@ Add::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<
     {
         return rtn;
     }
-    int iv = 0;
     float fv = 0;
     bool has_float = false;
 
@@ -28,27 +27,13 @@ Add::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<
         if (arg->m_type == ExpType::Integer)
         {
             const Integer& i = static_cast<const Integer&>(*arg);
-            if (has_float)
-            {
-                fv += i.m_value;
-            }
-            else
-            {
-                iv += i.m_value;
-            }
+            fv += i.m_value;
         }
         else if (arg->m_type == ExpType::Float)
         {
             const Float& f = static_cast<const Float&>(*arg);
-            if (has_float)
-            {
-                fv += f.m_value;
-            }
-            else
-            {
-                fv = iv + f.m_value;
-                has_float = true;
-            }
+            fv += f.m_value;
+            has_float = true;
         }
         else
         {
@@ -67,7 +52,7 @@ Add::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<
     }
     else
     {
-        result = std::make_shared<Integer>(iv);
+        result = std::make_shared<Integer>(static_cast<int>(fv));
     }
 
     return RtnValue { RtnType::SUCC, "" };

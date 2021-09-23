@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <math.h>
+#include <chrono>
 
 #include "test_utils.h"
 #include "token.h"
@@ -48,6 +49,11 @@ void LI_test::assert_sym_exp(const Expression& p_exp, const std::string& p_val)
 std::vector<std::shared_ptr<Expression>> LI_test::eval(const std::string& input)
 {
     std::shared_ptr<Environ> base = setup_base();
+    return LI_test::eval(input, base);
+}
+
+std::vector<std::shared_ptr<Expression>> LI_test::eval(const std::string& input, std::shared_ptr<Environ> base)
+{
     Parser parser("<input>", LI_test::string_input(input));
 
     std::vector<std::shared_ptr<Expression>> result;
@@ -61,4 +67,27 @@ std::vector<std::shared_ptr<Expression>> LI_test::eval(const std::string& input)
         e = parser.NextExp();
     }
     return result;
+}
+
+void LI_test::RunAndReport(const std::string& input, int times)
+{
+    std::shared_ptr<Environ> base = setup_base();
+    auto start = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < times; ++i)
+    {
+        LI_test::eval(input, base);
+    }
+    auto stop = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+
+    std::cout << "eval " << input << " " << times << " times spend " << duration.count() << "ms" << std::endl;
+}
+
+void LI_test::RunPerf()
+{
+    static const int times = 1000;
+
+    RunAndReport("(+ 1 2)", times);
+    RunAndReport("((lambda (x) (+ x x)) 5)", times);
 }
