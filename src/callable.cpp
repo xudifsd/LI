@@ -1,6 +1,3 @@
-#include <sstream>
-#include <iostream>
-
 #include "callable.h"
 
 using namespace LI;
@@ -93,6 +90,26 @@ Fn::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<E
     return v;
 }
 
+std::string
+LI::to_string(const RtnType& type)
+{
+    switch (type)
+    {
+        case RtnType::SUCC: return "SUCC";
+        case RtnType::ERR_ARGC: return "ERR_ARGC";
+        case RtnType::ERR_TYPE: return "ERR_TYPE";
+        case RtnType::ERR_MATH: return "ERR_MATH";
+        case RtnType::ERR_UNBOUND: return "ERR_UNBOUND";
+        case RtnType::ERR_INTERNAL: return "ERR_INTERNAL";
+    }
+}
+
+std::string
+LI::to_string(const RtnValue& val)
+{
+    return LI::to_string(val.m_type) + ":" + val.m_msg;
+}
+
 RtnValue
 LI::Eval(const Expression& exp, std::shared_ptr<Expression>& result, std::shared_ptr<Environ> env)
 {
@@ -145,9 +162,8 @@ LI::Eval(const Expression& exp, std::shared_ptr<Expression>& result, std::shared
                     }
                     if (first_val->m_type != ExpType::Callable)
                     {
-                        std::ostringstream ss;
-                        ss << "Unexpcted type " << *first_val << " in first element of list";
-                        return RtnValue { RtnType::ERR_TYPE, ss.str() };
+                        auto s = "Unexpcted type " + LI::to_string(*first_val) + " in first element of list";
+                        return RtnValue { RtnType::ERR_TYPE, s };
                     }
                     first = first_val;
                 }

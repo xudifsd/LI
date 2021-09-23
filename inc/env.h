@@ -1,9 +1,8 @@
 #pragma once
 
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <memory>
-#include <iostream>
 
 #include "exps.h"
 
@@ -23,8 +22,10 @@ namespace LI
 
         private:
             std::shared_ptr<Environ> m_parent;
-            std::unordered_map<std::string, std::shared_ptr<Expression>> m_frame;
+            std::map<std::string, std::shared_ptr<Expression>> m_frame;
 
-            friend std::ostream& operator<<(std::ostream& os, const LI::Environ& obj);
+            friend std::string to_string(const LI::Environ& env);
     };
+
+    std::ostream& operator<<(std::ostream& os, const LI::Environ& obj);
 }

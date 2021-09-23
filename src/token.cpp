@@ -23,37 +23,28 @@ Token::IsError()
     return m_type == TokenType::ERROR;
 }
 
-std::ostream& operator<<(std::ostream& p_stream, const Token& p_token)
+std::string
+LI::to_string(const TokenType& p_type)
 {
-    std::string t;
-    switch (p_token.m_type)
+    switch (p_type)
     {
-        case TokenType::LPAREN:
-            t = "LPAREN";
-            break;
-        case TokenType::RPAREN:
-            t = "RPAREN";
-            break;
-        case TokenType::TEOF:
-            t = "EOF";
-            break;
-        case TokenType::NUMBER:
-            t = "NUMBER";
-            break;
-        case TokenType::SYMBOL:
-            t = "SYMBOL";
-            break;
-        case TokenType::ERROR:
-            t = "ERROR";
-            break;
-            /*
-        case TokenType::LBRACE:
-            t = "LBRACE";
-            break;
-        case TokenType::RBRACE:
-            t = "RBRACE";
-            break;
-            */
+        case TokenType::LPAREN: return "LPAREN";
+        case TokenType::RPAREN: return "RPAREN";
+        case TokenType::TEOF: return "EOF";
+        case TokenType::NUMBER: return "NUMBER";
+        case TokenType::SYMBOL: return "SYMBOL";
+        case TokenType::ERROR: return "ERROR";
     }
-    return p_stream << t << "{" << p_token.m_lineNum << "," << p_token.m_colNum << "," << p_token.m_lexeme << "}";
+}
+
+std::string
+LI::to_string(const Token& token)
+{
+    return LI::to_string(token.m_type) + "{" + \
+        std::to_string(token.m_lineNum) + "," + std::to_string(token.m_colNum) + "," + token.m_lexeme + "}";
+}
+
+std::ostream& LI::operator<<(std::ostream& p_stream, const Token& token)
+{
+    return p_stream << LI::to_string(token);
 }

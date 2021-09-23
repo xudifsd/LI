@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <iostream>
+#include <ostream>
 
 namespace LI
 {
@@ -29,6 +29,8 @@ namespace LI
 
         bool IsError();
     };
-}
 
-std::ostream& operator<<(std::ostream& p_stream, const LI::Token& p_token);
+    std::string to_string(const TokenType& p_type);
+    std::string to_string(const Token& token);
+    std::ostream& operator<<(std::ostream& p_stream, const LI::Token& token);
+}

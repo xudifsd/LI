@@ -1,5 +1,4 @@
-#include <sstream>
-#include <iostream>
+#include <string>
 
 #include "built_in_macro.h"
 
@@ -21,12 +20,10 @@ Lambda::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_p
 
     if (args[0]->m_type != ExpType::List)
     {
-        std::ostringstream ss;
-        ss << "expecting list as first element of `lambda` but got " << *args[0];
         return RtnValue
         {
             RtnType::ERR_TYPE,
-                ss.str(),
+            "expecting list as first element of `lambda` but got " + LI::to_string(*args[0]),
         };
     }
 
@@ -37,12 +34,10 @@ Lambda::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_p
     {
         if (argList.m_value[i]->m_type != ExpType::Symbol)
         {
-            std::ostringstream ss;
-            ss << "expecting list of symbol as lamba argument but got " << *argList.m_value[i];
             return RtnValue
             {
                 RtnType::ERR_TYPE,
-                    ss.str(),
+                "expecting list of symbol as lamba argument but got " + LI::to_string(*argList.m_value[i]),
             };
         }
         const Symbol& sym = static_cast<const Symbol&>(*argList.m_value[i]);
@@ -77,12 +72,10 @@ Let::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<
 
     if (args[0]->m_type != ExpType::List)
     {
-        std::ostringstream ss;
-        ss << "expecting list as first element of `let` but got " << *args[0];
         return RtnValue
         {
             RtnType::ERR_TYPE,
-            ss.str(),
+            "expecting list as first element of `let` but got " + LI::to_string(*args[0]),
         };
     }
 
@@ -93,34 +86,28 @@ Let::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<
     {
         if (argList.m_value[i]->m_type != ExpType::List)
         {
-            std::ostringstream ss;
-            ss << "expecting list of list as first element of `let` but got list of " << *args[0];
             return RtnValue
             {
                 RtnType::ERR_TYPE,
-                ss.str(),
+                "expecting list of list as first element of `let` but got list of " + LI::to_string(*args[0]),
             };
         }
         const List& pair = static_cast<const List&>(*argList.m_value[i]);
         if (pair.m_value.size() != 2)
         {
-            std::ostringstream ss;
-            ss << "expecting key value pair in `let` arg list but got " << pair.m_value.size() << " elements";
             return RtnValue
             {
                 RtnType::ERR_ARGC,
-                ss.str(),
+                "expecting key value pair in `let` arg list but got " + std::to_string(pair.m_value.size()) + " elements",
             };
         }
 
         if (pair.m_value[0]->m_type != ExpType::Symbol)
         {
-            std::ostringstream ss;
-            ss << "expecting symbol as in `let` list but got " << *args[0];
             return RtnValue
             {
                 RtnType::ERR_TYPE,
-                ss.str(),
+                "expecting symbol as in `let` list but got " + LI::to_string(*args[0]),
             };
         }
         const Symbol& key = static_cast<const Symbol&>(*pair.m_value[0]);

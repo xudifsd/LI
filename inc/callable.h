@@ -76,6 +76,9 @@ namespace LI
             std::shared_ptr<Environ> m_context;
     };
 
+    std::string to_string(const RtnType& type);
+    std::string to_string(const RtnValue& val);
+
     RtnValue Eval(const Expression& exp, std::shared_ptr<Expression>& result, std::shared_ptr<Environ> env);
 
     RtnValue Eval_seq(const std::vector<std::shared_ptr<Expression>>& exps, std::vector<std::shared_ptr<Expression>>& result, std::shared_ptr<Environ> env, bool ignoreFirst);

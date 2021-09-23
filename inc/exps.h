@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <ostream>
 
 namespace LI
 {
@@ -52,6 +53,8 @@ namespace LI
         std::vector<std::shared_ptr<Expression>> m_value;
     };
 
+    std::string to_string(const LI::ExpType& expType);
+    std::string to_string(const LI::Expression& exp);
     std::ostream& operator<<(std::ostream& p_stream, const LI::Expression& p_exp);
 }
 

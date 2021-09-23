@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "env.h"
 
 using namespace LI;
@@ -33,17 +31,24 @@ Environ::Set(const std::string& p_symbol, std::shared_ptr<Expression> value)
     return previous == m_frame.end();
 }
 
-std::ostream& LI::operator<<(std::ostream& p_stream, const LI::Environ& p_env)
+std::string
+LI::to_string(const LI::Environ& env)
 {
-    p_stream << "Environ:{";
-    for (auto pair : p_env.m_frame)
+    std::string result = "Environ:{";
+    for (auto pair : env.m_frame)
     {
-        p_stream << pair.first << ":" << *pair.second << ",";
+        result += pair.first + ":" + LI::to_string(*pair.second) + ",";
     }
-    p_stream << "}";
-    if (p_env.m_parent != nullptr)
+    result += "}";
+    if (env.m_parent != nullptr)
     {
-        p_stream << "->" << *p_env.m_parent;
+        result += "->" + LI::to_string(*env.m_parent);
     }
-    return p_stream;
+    return result;
+}
+
+std::ostream&
+LI::operator<<(std::ostream& p_stream, const LI::Environ& env)
+{
+    return p_stream << LI::to_string(env);
 }

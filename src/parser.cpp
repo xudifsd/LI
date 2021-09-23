@@ -1,6 +1,5 @@
 #include <vector>
 #include <stack>
-#include <memory>
 
 #include "parser.h"
 #include "token.h"

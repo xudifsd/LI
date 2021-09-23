@@ -1,7 +1,3 @@
-#include <sstream>
-#include <iostream>
-#include <numeric>
-
 #include "built_in_fn.h"
 
 using namespace LI;
@@ -37,12 +33,10 @@ Add::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<
         }
         else
         {
-            std::ostringstream ss;
-            ss << "expecting int or float but got " << *arg;
             return RtnValue
             {
                 RtnType::ERR_TYPE,
-                ss.str(),
+                "expecting int or float but got " + LI::to_string(*arg),
             };
         }
     }

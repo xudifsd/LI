@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "exps.h"
 
 using namespace LI;
@@ -37,53 +35,63 @@ List::List(const std::vector<std::shared_ptr<Expression>> p_val)
 {
 }
 
-std::ostream& LI::operator<<(std::ostream& p_stream, const Expression& p_exp)
+std::string
+LI::to_string(const LI::ExpType& expType)
 {
-    switch (p_exp.m_type)
+    switch (expType)
+    {
+        case ExpType::Integer: return "Integer";
+        case ExpType::Float: return "Float";
+        case ExpType::Symbol: return "Symbol";
+        case ExpType::List: return "List";
+        case ExpType::Callable: return "Callable";
+    }
+}
+
+std::string
+LI::to_string(const LI::Expression& exp)
+{
+    std::string result = LI::to_string(exp.m_type);
+    switch (exp.m_type)
     {
         case ExpType::Integer:
         {
-            p_stream << "Integer:";
-            const Integer& i = static_cast<const Integer&>(p_exp);
-            p_stream << std::to_string(i.m_value);
-            break;
+            const Integer& i = static_cast<const Integer&>(exp);
+            return result + ":" + std::to_string(i.m_value);
         }
         case ExpType::Float:
         {
-            p_stream << "Float:";
-            const Float& f = static_cast<const Float&>(p_exp);
-            p_stream << std::to_string(f.m_value);
-            break;
+            const Float& f = static_cast<const Float&>(exp);
+            return result + ":" + std::to_string(f.m_value);
         }
         case ExpType::Symbol:
         {
-            p_stream << "Symbol:";
-            const Symbol& s = static_cast<const Symbol&>(p_exp);
-            p_stream << s.m_value;
-            break;
+            const Symbol& s = static_cast<const Symbol&>(exp);
+            return result + ":" + s.m_value;
         }
         case ExpType::List:
         {
-            p_stream << "List:";
-            const List& l = static_cast<const List&>(p_exp);
+            const List& l = static_cast<const List&>(exp);
 
-            p_stream << "(";
+            result += ":(";
             for (int i = 0; i < l.m_value.size(); ++i)
             {
-                p_stream << *l.m_value[i];
+                result += LI::to_string(*l.m_value[i]);
                 if (i != l.m_value.size() - 1)
                 {
-                    p_stream << ",";
+                    result += ",";
                 }
             }
-            p_stream << ")";
-            break;
+            return result + ")";
         }
         case ExpType::Callable:
         {
-            p_stream << "Callable";
-            break;
+            return result;
         }
     }
-    return p_stream;
+}
+
+std::ostream& LI::operator<<(std::ostream& p_stream, const Expression& p_exp)
+{
+    return p_stream << LI::to_string(p_exp);
 }
