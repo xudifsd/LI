@@ -37,7 +37,7 @@ List::List(const std::vector<std::shared_ptr<Expression>> p_val)
 {
 }
 
-std::ostream& operator<<(std::ostream& p_stream, const Expression& p_exp)
+std::ostream& LI::operator<<(std::ostream& p_stream, const Expression& p_exp)
 {
     switch (p_exp.m_type)
     {

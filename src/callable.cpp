@@ -1,4 +1,5 @@
 #include <sstream>
+#include <iostream>
 
 #include "callable.h"
 
@@ -74,21 +75,22 @@ Fn::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<E
             "expecting " + std::to_string(m_parameters.size()) + " args but got " + std::to_string(args.size())
         };
     }
-    std::shared_ptr<Environ> frame = std::make_shared<Environ>(env);
+    std::shared_ptr<Environ> frame = std::make_shared<Environ>(m_context);
     for (int i = 0; i < args.size(); ++i)
     {
         frame->Set(m_parameters[i], args[i]);
     }
 
-    for (int i = 0; i < m_body.size() - 1; ++i)
+    RtnValue v;
+    for (int i = 0; i < m_body.size(); ++i)
     {
-        RtnValue v = LI::Eval(*m_body[i], result, frame);
+        v = LI::Eval(*m_body[i], result, frame);
         if (v.IsError())
         {
             return v;
         }
     }
-    return LI::Eval(*m_body[m_body.size() - 1], result, frame);
+    return v;
 }
 
 RtnValue

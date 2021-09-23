@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "env.h"
 
 using namespace LI;
@@ -13,8 +15,8 @@ Environ::Lookup(const std::string& p_symbol)
     Environ* p = this;
     while (p != nullptr)
     {
-        auto result = p->m_current.find(p_symbol);
-        if (result != p->m_current.end())
+        auto result = p->m_frame.find(p_symbol);
+        if (result != p->m_frame.end())
         {
             return result->second;
         }
@@ -26,7 +28,22 @@ Environ::Lookup(const std::string& p_symbol)
 bool
 Environ::Set(const std::string& p_symbol, std::shared_ptr<Expression> value)
 {
-    auto previous = m_current.find(p_symbol);
-    m_current[p_symbol] = value;
-    return previous == m_current.end();
+    auto previous = m_frame.find(p_symbol);
+    m_frame[p_symbol] = value;
+    return previous == m_frame.end();
+}
+
+std::ostream& LI::operator<<(std::ostream& p_stream, const LI::Environ& p_env)
+{
+    p_stream << "Environ:{";
+    for (auto pair : p_env.m_frame)
+    {
+        p_stream << pair.first << ":" << *pair.second << ",";
+    }
+    p_stream << "}";
+    if (p_env.m_parent != nullptr)
+    {
+        p_stream << "->" << *p_env.m_parent;
+    }
+    return p_stream;
 }

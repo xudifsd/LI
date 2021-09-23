@@ -49,39 +49,39 @@ Parser::NextExp()
         case TokenType::RPAREN:
             return ParseResult { true, t, nullptr };
         case TokenType::LPAREN:
-            {
-                std::stack<std::vector<std::shared_ptr<Expression>>> stack;
-                stack.push(std::vector<std::shared_ptr<Expression>>());
+        {
+            std::stack<std::vector<std::shared_ptr<Expression>>> stack;
+            stack.push(std::vector<std::shared_ptr<Expression>>());
 
-                for (;;)
+            for (;;)
+            {
+                t = m_lexer.NextToken();
+                switch (t.m_type)
                 {
-                    t = m_lexer.NextToken();
-                    switch (t.m_type)
-                    {
-                        case TokenType::ERROR:
-                        case TokenType::TEOF:
-                            return ParseResult { true, t, nullptr };
-                            return ParseResult { true, t, nullptr };
-                        case TokenType::NUMBER:
-                        case TokenType::SYMBOL:
-                            stack.top().push_back(ToExp(t));
-                            break;
-                        case TokenType::RPAREN:
+                    case TokenType::ERROR:
+                    case TokenType::TEOF:
+                        return ParseResult { true, t, nullptr };
+                        return ParseResult { true, t, nullptr };
+                    case TokenType::NUMBER:
+                    case TokenType::SYMBOL:
+                        stack.top().push_back(ToExp(t));
+                        break;
+                    case TokenType::RPAREN:
+                        {
+                            auto top = stack.top();
+                            stack.pop();
+                            if (stack.size() == 0)
                             {
-                                auto top = stack.top();
-                                stack.pop();
-                                if (stack.size() == 0)
-                                {
-                                    return ParseResult { false, t, std::make_shared<List>(top) };
-                                }
-                                stack.top().push_back(std::make_shared<List>(top));
-                                break;
+                                return ParseResult { false, t, std::make_shared<List>(top) };
                             }
-                        case TokenType::LPAREN:
-                            stack.push(std::vector<std::shared_ptr<Expression>>());
+                            stack.top().push_back(std::make_shared<List>(top));
                             break;
-                    }
+                        }
+                    case TokenType::LPAREN:
+                        stack.push(std::vector<std::shared_ptr<Expression>>());
+                        break;
                 }
             }
+        }
     }
 }

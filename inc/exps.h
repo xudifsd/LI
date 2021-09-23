@@ -51,6 +51,7 @@ namespace LI
 
         std::vector<std::shared_ptr<Expression>> m_value;
     };
+
+    std::ostream& operator<<(std::ostream& p_stream, const LI::Expression& p_exp);
 }
 
-std::ostream& operator<<(std::ostream& p_stream, const LI::Expression& p_exp);

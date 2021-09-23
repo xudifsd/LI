@@ -46,6 +46,12 @@ void LI_test::assert_sym_exp(const Expression& p_exp, const std::string& p_val)
     ASSERT_EQ(i.m_value, p_val);
 }
 
+void LI_test::assert_no_error_eval(const Expression& exp, std::shared_ptr<Expression>& result, std::shared_ptr<Environ> env)
+{
+    RtnValue v = LI::Eval(exp, result, env);
+    ASSERT_FALSE(v.IsError());
+}
+
 std::vector<std::shared_ptr<Expression>> LI_test::eval(const std::string& input)
 {
     std::shared_ptr<Environ> base = setup_base();
@@ -61,7 +67,7 @@ std::vector<std::shared_ptr<Expression>> LI_test::eval(const std::string& input,
     while (!e.m_isError && e.m_token.m_type != TokenType::TEOF)
     {
         std::shared_ptr<Expression> r;
-        RtnValue v = Eval(*e.m_exp, r, base);
+        assert_no_error_eval(*e.m_exp, r, base);
 
         result.push_back(r);
         e = parser.NextExp();
@@ -90,4 +96,5 @@ void LI_test::RunPerf()
 
     RunAndReport("(+ 1 2)", times);
     RunAndReport("((lambda (x) (+ x x)) 5)", times);
+    RunAndReport("(let ((x 1)) (+ 1 x))", times);
 }

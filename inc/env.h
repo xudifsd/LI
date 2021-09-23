@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
+#include <iostream>
 
 #include "exps.h"
 
@@ -21,7 +22,9 @@ namespace LI
             bool Set(const std::string& p_symbol, std::shared_ptr<Expression> value);
 
         private:
-            std::unordered_map<std::string, std::shared_ptr<Expression>> m_current;
             std::shared_ptr<Environ> m_parent;
+            std::unordered_map<std::string, std::shared_ptr<Expression>> m_frame;
+
+            friend std::ostream& operator<<(std::ostream& os, const LI::Environ& obj);
     };
 }
