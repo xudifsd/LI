@@ -12,6 +12,7 @@ namespace LI
         TEOF,    // EOF
         NUMBER,  // number
         SYMBOL,  // symbol
+        STRING,  // string
         //LBRACE,  // "{"
         //RBRACE,  // "}"
         ERROR,   // for error handling

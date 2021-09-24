@@ -21,6 +21,7 @@ namespace LI
 
             Token BuildNumber(size_t line, size_t col);
             Token BuildSymbol(size_t line, size_t col);
+            Token BuildString(size_t line, size_t col);
 
             std::string m_fileName;
             std::unique_ptr<std::istream> m_stream;

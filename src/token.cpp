@@ -33,6 +33,7 @@ LI::to_string(const TokenType& p_type)
         case TokenType::TEOF: return "EOF";
         case TokenType::NUMBER: return "NUMBER";
         case TokenType::SYMBOL: return "SYMBOL";
+        case TokenType::STRING: return "STRING";
         case TokenType::ERROR: return "ERROR";
     }
 }

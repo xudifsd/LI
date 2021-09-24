@@ -27,6 +27,10 @@ Parser::ToExp(const Token& t)
     {
         return std::make_shared<Symbol>(t.m_lexeme);
     }
+    else if (t.m_type == TokenType::STRING)
+    {
+        return std::make_shared<String>(t.m_lexeme);
+    }
     return nullptr;
 }
 
@@ -44,6 +48,7 @@ Parser::NextExp()
             return ParseResult { false, t, nullptr };
         case TokenType::NUMBER:
         case TokenType::SYMBOL:
+        case TokenType::STRING:
             return ParseResult { false, t, ToExp(t) };
         case TokenType::RPAREN:
             return ParseResult { true, t, nullptr };
@@ -63,6 +68,7 @@ Parser::NextExp()
                         return ParseResult { true, t, nullptr };
                     case TokenType::NUMBER:
                     case TokenType::SYMBOL:
+                    case TokenType::STRING:
                         stack.top().push_back(ToExp(t));
                         break;
                     case TokenType::RPAREN:

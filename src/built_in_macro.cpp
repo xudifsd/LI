@@ -172,6 +172,12 @@ If::IsTrue(const std::shared_ptr<Expression> cond, bool& result)
             result = false;
             break;
         }
+        case ExpType::String:
+        {
+            const String& s = static_cast<const String&>(*cond);
+            result = s.m_value.size() != 0;
+            break;
+        }
     }
     return RtnValue { RtnType::SUCC, "" };
 }

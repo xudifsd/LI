@@ -40,6 +40,12 @@ List::List(const std::vector<std::shared_ptr<Expression>> p_val)
 {
 }
 
+String::String(const std::string& p_val)
+    : Expression(ExpType::String),
+      m_value(p_val)
+{
+}
+
 std::string
 LI::to_string(const LI::ExpType& expType)
 {
@@ -51,6 +57,7 @@ LI::to_string(const LI::ExpType& expType)
         case ExpType::List: return "List";
         case ExpType::Callable: return "Callable";
         case ExpType::Nil: return "Nil";
+        case ExpType::String: return "String";
     }
 }
 
@@ -96,6 +103,12 @@ LI::to_string(const LI::Expression& exp)
         }
         case ExpType::Nil:
         {
+            return result;
+        }
+        case ExpType::String:
+        {
+            const String& s = static_cast<const String&>(exp);
+            result += "\"" + s.m_value + "\"";
             return result;
         }
     }

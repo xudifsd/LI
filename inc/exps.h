@@ -12,6 +12,7 @@ namespace LI
         Integer,
         Float,
         Symbol,
+        String,
         List,
         Callable,
         Nil,
@@ -57,6 +58,13 @@ namespace LI
     struct Nil : Expression
     {
         Nil();
+    };
+
+    struct String : Expression
+    {
+        String(const std::string& p_val);
+
+        std::string m_value;
     };
 
     std::string to_string(const LI::ExpType& expType);

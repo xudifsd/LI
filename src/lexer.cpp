@@ -88,6 +88,11 @@ Lexer::NextToken()
         UngetChar(c);
         return BuildSymbol(line, col);
     }
+    else if (c == '"')
+    {
+        UngetChar(c);
+        return BuildString(line, col);
+    }
 
     std::string lexeme;
     lexeme += c;
@@ -131,4 +136,51 @@ Lexer::BuildSymbol(size_t line, size_t col)
     }
     UngetChar(c);
     return Token(TokenType::SYMBOL, line, col, result);
+}
+
+Token
+Lexer::BuildString(size_t line, size_t col)
+{
+    std::string result;
+    int c = NextChar(); // the first char is always "
+    c = NextChar();
+
+    bool hasEsc = false;
+
+    while (c != '"' || hasEsc)
+    {
+        if (hasEsc)
+        {
+            switch (c)
+            {
+                case 't': c = '\t'; break;
+                case 'n': c = '\n'; break;
+                case '"': c = '"'; break;
+                case '\\': c = '\\'; break;
+                default:
+                    return Token(TokenType::ERROR, line, col, result);
+            }
+            hasEsc = false;
+            result += c;
+            c = NextChar();
+        }
+        else
+        {
+            if (c == '\\')
+            {
+                hasEsc = true;
+            }
+            else if (c == '\n' || c == EOF)
+            {
+                return Token(TokenType::ERROR, line, col, result);
+            }
+            else
+            {
+                hasEsc = false;
+                result += c;
+            }
+            c = NextChar();
+        }
+    }
+    return Token(TokenType::STRING, line, col, result);
 }

@@ -12,18 +12,7 @@ using namespace LI_test;
 
 TEST(testLexer, correct)
 {
-    std::string input = "Hello (+ (/ 2.123 .3 ) 122)\n abd + .2";
-    std::unique_ptr<std::istream> p = std::make_unique<std::istringstream>(std::istringstream(input));
-    Lexer lexer("<input>", std::move(p));
-
-    std::vector<Token> tokens;
-    Token t = lexer.NextToken();
-    while (t.m_type != TokenType::ERROR && t.m_type != TokenType::TEOF)
-    {
-        tokens.push_back(t);
-        t = lexer.NextToken();
-    }
-    tokens.push_back(t);
+    std::vector<Token> tokens = LI_test::tokenize("Hello (+ (/ 2.123 .3 ) 122)\n abd + .2");
 
     ASSERT_EQ(tokens.size(), 14);
     assert_token(tokens[0], TokenType::SYMBOL, 1, 1, "Hello");
@@ -45,20 +34,40 @@ TEST(testLexer, correct)
 
 TEST(testLexer, failOnIncorrectFloat)
 {
-    std::string input = "Hello .1.21";
-    std::unique_ptr<std::istream> p = std::make_unique<std::istringstream>(std::istringstream(input));
-    Lexer lexer("<input>", std::move(p));
-
-    std::vector<Token> tokens;
-    Token t = lexer.NextToken();
-    while (t.m_type != TokenType::ERROR && t.m_type != TokenType::TEOF)
-    {
-        tokens.push_back(t);
-        t = lexer.NextToken();
-    }
-    tokens.push_back(t);
+    std::vector<Token> tokens = LI_test::tokenize("Hello .1.21");
 
     ASSERT_EQ(tokens.size(), 2);
     assert_token(tokens[0], TokenType::SYMBOL, 1, 1, "Hello");
     assert_token(tokens[1], TokenType::ERROR, 1, 7, ".1.");
+}
+
+TEST(testLexer, string)
+{
+    std::vector<Token> tokens = LI_test::tokenize("\"Hello string\"");
+
+    ASSERT_EQ(tokens.size(), 2);
+    assert_token(tokens[0], TokenType::STRING, 1, 1, "Hello string");
+    assert_token(tokens[1], TokenType::TEOF, 1, 15, "");
+}
+
+TEST(testLexer, stringWithEsc)
+{
+    std::vector<Token> tokens = LI_test::tokenize("\"Hello \\\"esc\"");
+
+    ASSERT_EQ(tokens.size(), 2);
+    assert_token(tokens[0], TokenType::STRING, 1, 1, "Hello \"esc");
+    assert_token(tokens[1], TokenType::TEOF, 1, 14, "");
+
+    tokens = LI_test::tokenize("\"\\n\"");
+
+    ASSERT_EQ(tokens.size(), 2);
+    assert_token(tokens[0], TokenType::STRING, 1, 1, "\n");
+    assert_token(tokens[1], TokenType::TEOF, 1, 5, "");
+}
+
+TEST(testLexer, newNewLineInStr)
+{
+    std::vector<Token> tokens = LI_test::tokenize("\"first line\nseconde line\"");
+    ASSERT_EQ(tokens.size(), 1);
+    assert_token(tokens[0], TokenType::ERROR, 1, 1, "first line");
 }

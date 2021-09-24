@@ -165,6 +165,7 @@ LI::Eval(const Expression& exp, std::shared_ptr<Expression>& result, std::shared
                 case ExpType::Integer:
                 case ExpType::Float:
                 case ExpType::Nil:
+                case ExpType::String:
                     return RtnValue { RtnType::ERR_TYPE, "Unexpcted " + LI::to_string(*first) + " in first element of list" };
                 case ExpType::Symbol:
                 case ExpType::List:
@@ -214,6 +215,12 @@ LI::Eval(const Expression& exp, std::shared_ptr<Expression>& result, std::shared
             }
         }
         case ExpType::Callable: return RtnValue { RtnType::ERR_INTERNAL, "unexpected callable" };
+        case ExpType::String:
+        {
+            const String& s = static_cast<const String&>(exp);
+            result = std::make_shared<String>(s.m_value);
+            return RtnValue { RtnType::SUCC, "" };
+        }
     }
 }
 

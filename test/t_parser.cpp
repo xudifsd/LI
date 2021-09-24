@@ -105,3 +105,19 @@ TEST(testParser, failOnUnexpectedToken)
     ASSERT_EQ(results[0].m_token.m_type, TokenType::ERROR);
     ASSERT_EQ(results[0].m_token.m_lexeme, ".1.");
 }
+
+TEST(testParser, parseStr)
+{
+    Parser parser("<input>", string_input("\"Hello string\""));
+
+    std::vector<std::shared_ptr<Expression>> exps;
+    ParseResult e = parser.NextExp();
+    while (!e.m_isError && e.m_token.m_type != TokenType::TEOF)
+    {
+        exps.push_back(e.m_exp);
+        e = parser.NextExp();
+    }
+
+    ASSERT_EQ(exps.size(), 1);
+    assert_str_exp(*exps[0], "Hello string");
+}

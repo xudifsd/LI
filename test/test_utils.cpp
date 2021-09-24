@@ -47,6 +47,13 @@ void LI_test::assert_sym_exp(const Expression& p_exp, const std::string& p_val)
     ASSERT_EQ(i.m_value, p_val);
 }
 
+void LI_test::assert_str_exp(const Expression& p_exp, const std::string& p_val)
+{
+    ASSERT_EQ(p_exp.m_type, ExpType::String);
+    const String& s = static_cast<const String&>(p_exp);
+    ASSERT_EQ(s.m_value, p_val);
+}
+
 void LI_test::assert_no_error_eval(const Expression& exp, std::shared_ptr<Expression>& result, std::shared_ptr<Environ> env)
 {
     RtnValue v = LI::Eval(exp, result, env);
@@ -76,6 +83,22 @@ std::vector<std::shared_ptr<Expression>> LI_test::eval(const std::string& input,
     return result;
 }
 
+std::vector<Token> LI_test::tokenize(const std::string& input)
+{
+    std::unique_ptr<std::istream> p = std::make_unique<std::istringstream>(std::istringstream(input));
+    Lexer lexer("<input>", std::move(p));
+
+    std::vector<Token> tokens;
+    Token t = lexer.NextToken();
+    while (t.m_type != TokenType::ERROR && t.m_type != TokenType::TEOF)
+    {
+        tokens.push_back(t);
+        t = lexer.NextToken();
+    }
+    tokens.push_back(t);
+    return tokens;
+}
+
 void LI_test::RunAndReport(const std::string& input, int times)
 {
     std::shared_ptr<Environ> base = setup_base();
@@ -99,4 +122,5 @@ void LI_test::RunPerf()
     RunAndReport("((lambda (x) (+ x x)) 5)", times);
     RunAndReport("(let ((x 1)) (+ 1 x))", times);
     RunAndReport("(if 1 2 3)", times);
+    RunAndReport("\"Hello string\"", times);
 }

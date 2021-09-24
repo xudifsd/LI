@@ -20,11 +20,15 @@ namespace LI_test
 
     void assert_sym_exp(const LI::Expression& p_exp, const std::string& p_val);
 
+    void assert_str_exp(const LI::Expression& p_exp, const std::string& p_val);
+
     void assert_no_error_eval(const LI::Expression& exp, std::shared_ptr<LI::Expression>& result, std::shared_ptr<LI::Environ> env);
 
     std::vector<std::shared_ptr<LI::Expression>> eval(const std::string& input);
 
     std::vector<std::shared_ptr<LI::Expression>> eval(const std::string& input, std::shared_ptr<LI::Environ> base);
+
+    std::vector<LI::Token> tokenize(const std::string& input);
 
     void RunAndReport(const std::string& input, int times);
 
