@@ -41,7 +41,7 @@ namespace LI
 
             CallableType GetType() const;
 
-            static RtnValue CheckArgs(const std::vector<std::shared_ptr<Expression>>& args, int argc, int atLeast);
+            static RtnValue CheckArgs(const std::vector<std::shared_ptr<Expression>>& args, int argc, int atLeast, int atMost);
 
             virtual RtnValue Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<Expression>& result, std::shared_ptr<Environ> env) const = 0;
 

@@ -27,3 +27,25 @@ TEST(testBuiltIn, letClosure)
     ASSERT_EQ(result.size(), 1);
     assert_int_exp(*result[0], 6);
 }
+
+TEST(testBuiltIn, ifWithTwo)
+{
+    std::vector<std::shared_ptr<Expression>> result = eval("(if 1 2)");
+    ASSERT_EQ(result.size(), 1);
+    assert_int_exp(*result[0], 2);
+
+    result = eval("(if 0 2)");
+    ASSERT_EQ(result.size(), 1);
+    ASSERT_EQ(result[0]->m_type, ExpType::Nil);
+}
+
+TEST(testBuiltIn, ifThree)
+{
+    std::vector<std::shared_ptr<Expression>> result = eval("(if 1 2 3)");
+    ASSERT_EQ(result.size(), 1);
+    assert_int_exp(*result[0], 2);
+
+    result = eval("(if 0 2 3)");
+    ASSERT_EQ(result.size(), 1);
+    assert_int_exp(*result[0], 3);
+}

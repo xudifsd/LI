@@ -21,7 +21,7 @@ Callable::GetType() const
 }
 
 RtnValue
-Callable::CheckArgs(const std::vector<std::shared_ptr<Expression>>& args, int argc, int atLeast)
+Callable::CheckArgs(const std::vector<std::shared_ptr<Expression>>& args, int argc, int atLeast, int atMost)
 {
     if (argc != -1 && args.size() != argc)
     {
@@ -38,6 +38,15 @@ Callable::CheckArgs(const std::vector<std::shared_ptr<Expression>>& args, int ar
         {
             RtnType::ERR_ARGC,
             "expecting at least " + std::to_string(atLeast) + " args but got " + std::to_string(args.size())
+        };
+    }
+
+    if (atMost != -1 && args.size() > atMost)
+    {
+        return RtnValue
+        {
+            RtnType::ERR_ARGC,
+            "expecting at most " + std::to_string(atMost) + " args but got " + std::to_string(args.size())
         };
     }
     return RtnValue { RtnType::SUCC, "" };
@@ -127,6 +136,11 @@ LI::Eval(const Expression& exp, std::shared_ptr<Expression>& result, std::shared
             result = std::make_shared<Float>(f.m_value);
             return RtnValue { RtnType::SUCC, "" };
         }
+        case ExpType::Nil:
+        {
+            result = std::make_shared<Nil>();
+            return RtnValue { RtnType::SUCC, "" };
+        }
         case ExpType::Symbol:
         {
             const Symbol& s = static_cast<const Symbol&>(exp);
@@ -150,7 +164,8 @@ LI::Eval(const Expression& exp, std::shared_ptr<Expression>& result, std::shared
             {
                 case ExpType::Integer:
                 case ExpType::Float:
-                    return RtnValue { RtnType::ERR_TYPE, "Unexpcted number in first element of list" };
+                case ExpType::Nil:
+                    return RtnValue { RtnType::ERR_TYPE, "Unexpcted " + LI::to_string(*first) + " in first element of list" };
                 case ExpType::Symbol:
                 case ExpType::List:
                 {
@@ -198,10 +213,7 @@ LI::Eval(const Expression& exp, std::shared_ptr<Expression>& result, std::shared
                 }
             }
         }
-        case ExpType::Callable:
-        {
-            return RtnValue { RtnType::ERR_INTERNAL, "unexpected callable" };
-        }
+        case ExpType::Callable: return RtnValue { RtnType::ERR_INTERNAL, "unexpected callable" };
     }
 }
 

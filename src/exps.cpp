@@ -11,6 +11,11 @@ Expression::~Expression()
 {
 }
 
+Nil::Nil()
+    : Expression(ExpType::Nil)
+{
+}
+
 Integer::Integer(int p_val)
     : Expression(ExpType::Integer),
       m_value(p_val)
@@ -45,6 +50,7 @@ LI::to_string(const LI::ExpType& expType)
         case ExpType::Symbol: return "Symbol";
         case ExpType::List: return "List";
         case ExpType::Callable: return "Callable";
+        case ExpType::Nil: return "Nil";
     }
 }
 
@@ -85,6 +91,10 @@ LI::to_string(const LI::Expression& exp)
             return result + ")";
         }
         case ExpType::Callable:
+        {
+            return result;
+        }
+        case ExpType::Nil:
         {
             return result;
         }

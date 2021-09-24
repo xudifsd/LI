@@ -14,6 +14,7 @@ namespace LI
         Symbol,
         List,
         Callable,
+        Nil,
     };
 
     struct Expression
@@ -51,6 +52,11 @@ namespace LI
         List(const std::vector<std::shared_ptr<Expression>> p_val);
 
         std::vector<std::shared_ptr<Expression>> m_value;
+    };
+
+    struct Nil : Expression
+    {
+        Nil();
     };
 
     std::string to_string(const LI::ExpType& expType);

@@ -10,6 +10,7 @@ LI::setup_base()
     result->Set("+", std::make_shared<Add>());
     result->Set("lambda", std::make_shared<Lambda>());
     result->Set("let", std::make_shared<Let>());
+    result->Set("if", std::make_shared<If>());
 
     return result;
 }

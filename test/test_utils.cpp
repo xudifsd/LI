@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <math.h>
 #include <chrono>
+#include <iostream>
 
 #include "test_utils.h"
 #include "token.h"
@@ -97,4 +98,5 @@ void LI_test::RunPerf()
     RunAndReport("(+ 1 2)", times);
     RunAndReport("((lambda (x) (+ x x)) 5)", times);
     RunAndReport("(let ((x 1)) (+ 1 x))", times);
+    RunAndReport("(if 1 2 3)", times);
 }

@@ -12,7 +12,7 @@ Lambda::Lambda()
 RtnValue
 Lambda::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<Expression>& result, std::shared_ptr<Environ> env) const
 {
-    RtnValue rtn = CheckArgs(args, -1, 2);
+    RtnValue rtn = CheckArgs(args, -1, 2, -1);
     if (rtn.IsError())
     {
         return rtn;
@@ -64,7 +64,7 @@ Let::Let()
 RtnValue
 Let::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<Expression>& result, std::shared_ptr<Environ> env) const
 {
-    RtnValue rtn = CheckArgs(args, -1, 2);
+    RtnValue rtn = CheckArgs(args, -1, 2, -1);
     if (rtn.IsError())
     {
         return rtn;
@@ -130,4 +130,89 @@ Let::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<
         }
     }
     return rtn;
+}
+
+If::If()
+    : BuiltInMacro()
+{
+}
+
+RtnValue
+If::IsTrue(const std::shared_ptr<Expression> cond, bool& result)
+{
+    switch (cond->m_type)
+    {
+        case ExpType::Symbol:
+        case ExpType::Callable:
+            return RtnValue
+            {
+                RtnType::ERR_TYPE,
+                "expecting int/float/list as condition of `if` but got " + LI::to_string(*cond),
+            };
+        case ExpType::Integer:
+        {
+            const Integer& i = static_cast<const Integer&>(*cond);
+            result = i.m_value != 0;
+            break;
+        }
+        case ExpType::Float:
+        {
+            const Float& f = static_cast<const Float&>(*cond);
+            result = f.m_value != 0;
+            break;
+        }
+        case ExpType::List:
+        {
+            const List& l = static_cast<const List&>(*cond);
+            result = l.m_value.size() != 0;
+            break;
+        }
+        case ExpType::Nil:
+        {
+            result = false;
+            break;
+        }
+    }
+    return RtnValue { RtnType::SUCC, "" };
+}
+
+RtnValue
+If::Call(const std::vector<std::shared_ptr<Expression>>& args, std::shared_ptr<Expression>& result, std::shared_ptr<Environ> env) const
+{
+    RtnValue rtn = CheckArgs(args, -1, 2, 3);
+    if (rtn.IsError())
+    {
+        return rtn;
+    }
+
+    std::shared_ptr<Expression> cond;
+    rtn = LI::Eval(*args[0], cond, env);
+    if (rtn.IsError())
+    {
+        return rtn;
+    }
+
+    bool condition = false;
+    rtn = If::IsTrue(cond, condition);
+    if (rtn.IsError())
+    {
+        return rtn;
+    }
+
+    if (condition)
+    {
+        return LI::Eval(*args[1], result, env);
+    }
+    else
+    {
+        if (args.size() > 2)
+        {
+            return LI::Eval(*args[2], result, env);
+        }
+        else
+        {
+            result = std::make_shared<Nil>();
+            return RtnValue { RtnType::SUCC, "" };
+        }
+    }
 }

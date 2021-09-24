@@ -19,3 +19,5 @@
 # For this project only
 run_test
 libli
+*.swp
+*.swo
