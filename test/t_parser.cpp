@@ -14,22 +14,14 @@ using namespace LI_test;
 
 TEST(testParser, correct)
 {
-    Parser parser("<input>", string_input("Hello (+ (/ 2.123 .3 ) 122)\n abd + .2"));
+    std::vector<ParseResult> results = parse("Hello (+ (/ 2.123 .3 ) 122)\n abd + .2");
 
-    std::vector<std::shared_ptr<Expression>> exps;
-    ParseResult e = parser.NextExp();
-    while (!e.m_isError && e.m_token.m_type != TokenType::TEOF)
-    {
-        exps.push_back(e.m_exp);
-        e = parser.NextExp();
-    }
-    exps.push_back(e.m_exp);
+    ASSERT_EQ(results.size(), 6);
+    assert_sym_exp(results[0], "Hello");
 
-    ASSERT_EQ(exps.size(), 6);
-    assert_sym_exp(*exps[0], "Hello");
-
-    ASSERT_EQ(exps[1]->m_type, ExpType::List);
-    const List& list = static_cast<const List&>(*exps[1]);
+    ASSERT_FALSE(results[1].m_isError);
+    ASSERT_EQ(results[1].m_exp->m_type, ExpType::List);
+    const List& list = static_cast<const List&>(*results[1].m_exp);
     ASSERT_EQ(list.m_value.size(), 3);
 
     assert_sym_exp(*list.m_value[0], "+");
@@ -43,25 +35,16 @@ TEST(testParser, correct)
 
     assert_int_exp(*list.m_value[2], 122);
 
-    assert_sym_exp(*exps[2], "abd");
-    assert_sym_exp(*exps[3], "+");
-    assert_float_exp(*exps[4], 0.2, 0.00001);
+    assert_sym_exp(results[2], "abd");
+    assert_sym_exp(results[3], "+");
+    assert_float_exp(results[4], 0.2, 0.00001);
 
-    ASSERT_EQ(exps[5], nullptr);
+    assert_eof_exp(results[5]);
 }
 
 TEST(testParser, failOnIncorrectFloat)
 {
-    Parser parser("<input>", string_input(".1.21"));
-
-    std::vector<ParseResult> results;
-    ParseResult e = parser.NextExp();
-    while (!e.m_isError && e.m_token.m_type != TokenType::TEOF)
-    {
-        results.push_back(e);
-        e = parser.NextExp();
-    }
-    results.push_back(e);
+    std::vector<ParseResult> results = parse(".1.21");
 
     ASSERT_EQ(results.size(), 1);
     ASSERT_TRUE(results[0].m_isError);
@@ -71,16 +54,7 @@ TEST(testParser, failOnIncorrectFloat)
 
 TEST(testParser, failOnUnmatchedParentheses)
 {
-    Parser parser("<input>", string_input("(abd"));
-
-    std::vector<ParseResult> results;
-    ParseResult e = parser.NextExp();
-    while (!e.m_isError && e.m_token.m_type != TokenType::TEOF)
-    {
-        results.push_back(e);
-        e = parser.NextExp();
-    }
-    results.push_back(e);
+    std::vector<ParseResult> results = parse("(abd");
 
     ASSERT_EQ(results.size(), 1);
     ASSERT_TRUE(results[0].m_isError);
@@ -89,16 +63,7 @@ TEST(testParser, failOnUnmatchedParentheses)
 
 TEST(testParser, failOnUnexpectedToken)
 {
-    Parser parser("<input>", string_input("(.1."));
-
-    std::vector<ParseResult> results;
-    ParseResult e = parser.NextExp();
-    while (!e.m_isError && e.m_token.m_type != TokenType::TEOF)
-    {
-        results.push_back(e);
-        e = parser.NextExp();
-    }
-    results.push_back(e);
+    std::vector<ParseResult> results = parse("(.1.");
 
     ASSERT_EQ(results.size(), 1);
     ASSERT_TRUE(results[0].m_isError);
@@ -108,16 +73,9 @@ TEST(testParser, failOnUnexpectedToken)
 
 TEST(testParser, parseStr)
 {
-    Parser parser("<input>", string_input("\"Hello string\""));
+    std::vector<ParseResult> results = parse("\"Hello string\"");
 
-    std::vector<std::shared_ptr<Expression>> exps;
-    ParseResult e = parser.NextExp();
-    while (!e.m_isError && e.m_token.m_type != TokenType::TEOF)
-    {
-        exps.push_back(e.m_exp);
-        e = parser.NextExp();
-    }
-
-    ASSERT_EQ(exps.size(), 1);
-    assert_str_exp(*exps[0], "Hello string");
+    ASSERT_EQ(results.size(), 2);
+    assert_str_exp(results[0], "Hello string");
+    assert_eof_exp(results[1]);
 }

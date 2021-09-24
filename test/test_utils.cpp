@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <math.h>
 #include <chrono>
+#include <vector>
 #include <iostream>
 
 #include "test_utils.h"
@@ -23,6 +24,45 @@ void LI_test::assert_token(const LI::Token& t, LI::TokenType type, size_t lineNu
     ASSERT_EQ(t.m_lineNum, lineNum);
     ASSERT_EQ(t.m_colNum, colNum);
     ASSERT_EQ(t.m_lexeme, lexeme);
+}
+
+void LI_test::assert_int_exp(const ParseResult& result, int p_val)
+{
+    ASSERT_FALSE(result.m_isError);
+    ASSERT_EQ(result.m_exp->m_type, ExpType::Integer);
+    const Integer& i = static_cast<const Integer&>(*result.m_exp);
+    ASSERT_EQ(i.m_value, p_val);
+}
+
+void LI_test::assert_float_exp(const ParseResult& result, float b, float epsilon)
+{
+    ASSERT_FALSE(result.m_isError);
+    ASSERT_EQ(result.m_exp->m_type, ExpType::Float);
+    const Float& i = static_cast<const Float&>(*result.m_exp);
+    float a = i.m_value;
+    ASSERT_TRUE(fabs(a - b) <= epsilon * std::max(fabs(a), fabs(b)));
+}
+
+void LI_test::assert_sym_exp(const ParseResult& result, const std::string& p_val)
+{
+    ASSERT_FALSE(result.m_isError);
+    ASSERT_EQ(result.m_exp->m_type, ExpType::Symbol);
+    const Symbol& i = static_cast<const Symbol&>(*result.m_exp);
+    ASSERT_EQ(i.m_value, p_val);
+}
+
+void LI_test::assert_str_exp(const ParseResult& result, const std::string& p_val)
+{
+    ASSERT_FALSE(result.m_isError);
+    ASSERT_EQ(result.m_exp->m_type, ExpType::String);
+    const String& s = static_cast<const String&>(*result.m_exp);
+    ASSERT_EQ(s.m_value, p_val);
+}
+
+void LI_test::assert_eof_exp(const ParseResult& result)
+{
+    ASSERT_FALSE(result.m_isError);
+    ASSERT_EQ(result.m_token.m_type, TokenType::TEOF);
 }
 
 void LI_test::assert_int_exp(const Expression& p_exp, int p_val)
@@ -97,6 +137,22 @@ std::vector<Token> LI_test::tokenize(const std::string& input)
     }
     tokens.push_back(t);
     return tokens;
+}
+
+std::vector<ParseResult>
+LI_test::parse(const std::string& input)
+{
+    Parser parser("<input>", string_input(input));
+
+    std::vector<ParseResult> exps;
+    ParseResult r = parser.NextExp();
+    while (!r.m_isError && r.m_token.m_type != TokenType::TEOF)
+    {
+        exps.push_back(r);
+        r = parser.NextExp();
+    }
+    exps.push_back(r);
+    return exps;
 }
 
 void LI_test::RunAndReport(const std::string& input, int times)
